@@ -13,6 +13,8 @@ THREEx.VideoTexture	= function(url){
 
 	// create the texture
 	var texture	= new THREE.Texture( video );
+	texture.minFilter = THREE.LinearFilter;
+	
 	// expose texture as this.texture
 	this.texture	= texture
 
