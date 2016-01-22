@@ -16,10 +16,17 @@
         right: 0;
         top: 0;
       }
+      button {
+	      position: fixed;
+	      top:0;
+	      left: 0;
+      }
     </style>
   </head>
   <body>
-    <div id="webglviewer"></div>
+    <div id="webglviewer">
+	    <button>시작</button>
+    </div>
 
     <script src="./js/three.min.js"></script>
     <script src="./js/StereoEffect.js"></script>
@@ -84,8 +91,8 @@
 		}else	alert('cant play mp4 or ogv')
 		
 		// create the videoTexture
-		var videoTexture= new THREEx.VideoTexture(url)
-		var video	= videoTexture.video
+		videoTexture= new THREEx.VideoTexture(url)
+		video	= videoTexture.video
 		updateFcts.push(function(delta, now){
 			videoTexture.update(delta, now)
 		})
@@ -176,6 +183,37 @@
           container.webkitRequestFullscreen();
         }
       }
+      
+//var video = document.getElementsByTagName("video");
+video.pause();
+
+var lastTime = Date.now();
+var animationFrame;
+var framesPerSecond = 30;
+function loop() {
+    var time = Date.now();
+    var elapsed = (time - lastTime) / 1000;
+    // render
+    if(elapsed >= ((1000/framesPerSecond)/1000)) {
+        video.currentTime = video.currentTime + elapsed;
+        lastTime = time;
+    }
+
+    // if we are at the end of the video stop
+    var currentTime = (Math.round(parseFloat(video.currentTime)*10000)/10000);
+    var duration = (Math.round(parseFloat(video.duration)*10000)/10000);
+    if(currentTime >= duration) {
+        console.log('currentTime: ' + currentTime + ' duration: ' + video.duration);
+        return;
+    }
+
+    animationFrame = requestAnimationFrame(loop);
+}
+
+document.getElementsByTagName('button')[0].addEventListener('click', function() {
+  video.load();
+  loop();
+});
     </script>
   </body>
 </html>
