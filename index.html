@@ -24,16 +24,95 @@
     </style>
   </head>
   <body>
+	<video id="video" src="cocvr.mp4"></video>
+
     <div id="webglviewer">
-	    <button>시작</button>
+<button id="play">Play</button>
+<button id="pause">Pause</button>
+<button id="load">Load</button>
     </div>
 
     <script src="./js/three.min.js"></script>
     <script src="./js/StereoEffect.js"></script>
     <script src="./js/DeviceOrientationControls.js"></script>
     <script src="./js/OrbitControls.js"></script>
-    <script src="./js/helvetiker_regular.typeface.js"></script>
-	<script src='./js/threex.videotexture.js'></script>
+<script>
+function InlineVideo(videoSrc, wrapEl) {
+  this.wrapEl = wrapEl || document.body;
+
+  this.videlEl = document.createElement('video');
+  this.wrapEl.appendChild(this.videlEl)
+  this.videlEl.src = videoSrc;
+
+  this.audioEl = document.createElement("audio");
+  this.wrapEl.appendChild(this.audioEl)
+  this.audioEl.src = videoSrc;
+  
+  this._loopProperty = {
+    lastTime: null,
+    animationFrame: null,
+    framesPerSecond: 60
+  };
+}
+
+InlineVideo.prototype.load = function() {
+  this.videlEl.load();
+  this.audioEl.load();
+};
+
+InlineVideo.prototype.play = function() {
+  this.audioEl.play();
+  this._loopProperty.lastTime = Date.now();
+  this._loop();
+};
+
+InlineVideo.prototype.pause = function() {
+  this.audioEl.pause()
+  window.cancelAnimationFrame(this._loopProperty.animationFrame);
+}
+
+InlineVideo.prototype._loop = function() {
+    var time = Date.now();
+    var elapsed = (time - this._loopProperty.lastTime) / 1000;
+    // render
+    if(elapsed >= ((1000/this._loopProperty.framesPerSecond)/1000)) { 
+      console.log(this.audioEl.currentTime)
+      this.videlEl.currentTime = this.audioEl.currentTime;
+      this._loopProperty.lastTime = time;
+    }
+
+    // if we are at the end of the video stop
+    var currentTime = (Math.round(parseFloat(this.videlEl.currentTime)*10000)/10000);
+    var duration = (Math.round(parseFloat(this.videlEl.duration)*10000)/10000);
+    if(currentTime >= duration) {
+        console.log('currentTime: ' + currentTime + ' duration: ' + this.videlEl.duration);
+        window.cancelAnimationFrame(this._loopProperty.animationFrame);
+        this.load();
+      return;
+    }
+
+    this._loopProperty.animationFrame = requestAnimationFrame(this._loop.bind(this));
+};	
+</script>
+	<script>
+		
+var THREEx = THREEx || {}
+
+THREEx.VideoTexture	= function(video){
+	// create the texture
+	var texture	= new THREE.Texture( video );
+	// expose texture as this.texture
+	this.texture	= texture
+
+	/**
+	 * update the object
+	 */
+	this.update	= function(){
+		if( video.readyState !== video.HAVE_ENOUGH_DATA )	return;
+		texture.needsUpdate	= true;		
+	}
+}
+	</script>
 
     <script>
       var scene,
@@ -46,7 +125,8 @@
           clock,
           updateFcts;
           
-          
+		  var inlineVideo = new InlineVideo("cocvr.mp4");
+      
         init();
 
       function init() {
@@ -81,18 +161,11 @@
 
 		/* 구 와 비디오 텍스처 추가하기 */
 		// find out which file formats i can read
-		var canPlayMp4	= document.createElement('video').canPlayType('video/mp4') !== '' ? true : false
-		var canPlayOgg	= document.createElement('video').canPlayType('video/ogg') !== '' ? true : false
-		if( canPlayMp4 ){
-		//		var url	= 'videos/sintel.mp4'
-			var url = 'cocvr.mp4';
-		}else if( canPlayOgg ){
-			var url	= 'videos/sintel.ogv'
-		}else	alert('cant play mp4 or ogv')
-		
+		var url = 'cocvr.mp4';
+
 		// create the videoTexture
-		videoTexture= new THREEx.VideoTexture(url)
-		video	= videoTexture.video
+		videoTexture = new THREEx.VideoTexture(inlineVideo.videlEl)
+		
 		updateFcts.push(function(delta, now){
 			videoTexture.update(delta, now)
 		})
@@ -184,35 +257,21 @@
         }
       }
       
-//var video = document.getElementsByTagName("video");
-video.pause();
 
-var lastTime = Date.now();
-var animationFrame;
-var framesPerSecond = 30;
-function loop() {
-    var time = Date.now();
-    var elapsed = (time - lastTime) / 1000;
-    // render
-    if(elapsed >= ((1000/framesPerSecond)/1000)) {
-        video.currentTime = video.currentTime + elapsed;
-        lastTime = time;
-    }
+// video 컴포넌트 재생하기만 하면됨
+var loadBtn = document.getElementById("load");
+loadBtn.addEventListener("click", function() {
+  inlineVideo.load();
+});
 
-    // if we are at the end of the video stop
-    var currentTime = (Math.round(parseFloat(video.currentTime)*10000)/10000);
-    var duration = (Math.round(parseFloat(video.duration)*10000)/10000);
-    if(currentTime >= duration) {
-        console.log('currentTime: ' + currentTime + ' duration: ' + video.duration);
-        return;
-    }
+var playBtn = document.getElementById("play");
+playBtn.addEventListener("click", function() {
+  inlineVideo.play();
+});
 
-    animationFrame = requestAnimationFrame(loop);
-}
-
-document.getElementsByTagName('button')[0].addEventListener('click', function() {
-  video.load();
-  loop();
+var pauseBtn = document.getElementById("pause");
+pauseBtn.addEventListener("click", function() {
+  inlineVideo.pause();
 });
     </script>
   </body>
