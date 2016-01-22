@@ -130,8 +130,11 @@ THREEx.VideoTexture	= function(video){
           controls,
           clock,
           updateFcts;
-          
-		  var inlineVideo = new InlineVideo("cocvr.mp4", document.querySelector(".hiddenMedia"));
+ 
+ //		var videoUrl = 'cocvr.mp4'; // static file
+		var videoUrl = 'https://r12---sn-oguesney.googlevideo.com/videoplayback?mime=video%2Fmp4&requiressl=yes&key=yt6&mm=31&mn=sn-oguesney&mt=1453468596&mv=m&ms=au&source=youtube&ip=111.91.137.76&sparams=dur%2Cid%2Cinitcwndbps%2Cip%2Cipbits%2Citag%2Clmt%2Cmime%2Cmm%2Cmn%2Cms%2Cmv%2Cnh%2Cpl%2Cratebypass%2Crequiressl%2Csource%2Cupn%2Cexpire&fexp=3300134%2C3300164%2C3312381%2C9420452%2C9422596%2C9426403&initcwndbps=3633750&id=o-APItFvtjFaHD8OaC1gkAq9LB7UKZuMqFkPuh0DETODUI&upn=yRYLpjJA_Oc&lmt=1452858876392567&nh=IgpwcjAzLm5ydDE5KgkxMjcuMC4wLjE&ratebypass=yes&pl=26&dur=216.526&expire=1453490288&sver=3&signature=5971DEFDA2E5878AB8023C9537CE87BAE404DBA9.9BE285CDEFF6EC46F2EBD147DD96E6B93170A5F1&ipbits=0&itag=18&cpn=7p5oG3hClVgJwMOD&ptk=youtube_none&pltype=contentugc&c=MWEB&cver=html5'; // streaming file
+		         
+		  var inlineVideo = new InlineVideo( videoUrl, document.querySelector(".hiddenMedia"));
       
         init();
 
@@ -166,8 +169,7 @@ THREEx.VideoTexture	= function(video){
 
 		/* 구 와 비디오 텍스처 추가하기 */
 		// find out which file formats i can read
-//		var url = 'cocvr.mp4'; // static file
-		var url = 'https://r12---sn-oguesney.googlevideo.com/videoplayback?mime=video%2Fmp4&requiressl=yes&key=yt6&mm=31&mn=sn-oguesney&mt=1453468596&mv=m&ms=au&source=youtube&ip=111.91.137.76&sparams=dur%2Cid%2Cinitcwndbps%2Cip%2Cipbits%2Citag%2Clmt%2Cmime%2Cmm%2Cmn%2Cms%2Cmv%2Cnh%2Cpl%2Cratebypass%2Crequiressl%2Csource%2Cupn%2Cexpire&fexp=3300134%2C3300164%2C3312381%2C9420452%2C9422596%2C9426403&initcwndbps=3633750&id=o-APItFvtjFaHD8OaC1gkAq9LB7UKZuMqFkPuh0DETODUI&upn=yRYLpjJA_Oc&lmt=1452858876392567&nh=IgpwcjAzLm5ydDE5KgkxMjcuMC4wLjE&ratebypass=yes&pl=26&dur=216.526&expire=1453490288&sver=3&signature=5971DEFDA2E5878AB8023C9537CE87BAE404DBA9.9BE285CDEFF6EC46F2EBD147DD96E6B93170A5F1&ipbits=0&itag=18&cpn=7p5oG3hClVgJwMOD&ptk=youtube_none&pltype=contentugc&c=MWEB&cver=html5'; // streaming file
+
 
 		// create the videoTexture
 		videoTexture = new THREEx.VideoTexture(inlineVideo.videlEl)
