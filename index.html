@@ -21,11 +21,13 @@
 	      top:0;
 	      left: 0;
       }
+      .hiddenMedia {
+	      position: absolute;
+	      top: -10000px;
+      }
     </style>
   </head>
   <body>
-	<video id="video" src="cocvr.mp4"></video>
-
     <div id="webglviewer">
 	    <div class="control">
 <button id="play">Play</button>
@@ -33,7 +35,8 @@
 <button id="load">Load</button>
 	    </div>
     </div>
-
+	<div class="hiddenMedia">
+	</div>
     <script src="./js/three.min.js"></script>
     <script src="./js/StereoEffect.js"></script>
     <script src="./js/DeviceOrientationControls.js"></script>
@@ -128,7 +131,7 @@ THREEx.VideoTexture	= function(video){
           clock,
           updateFcts;
           
-		  var inlineVideo = new InlineVideo("cocvr.mp4");
+		  var inlineVideo = new InlineVideo("cocvr.mp4", document.querySelector(".hiddenMedia"));
       
         init();
 
